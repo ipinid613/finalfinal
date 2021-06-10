@@ -47,7 +47,7 @@
     <div class="container">
         <div class="box">
             {# enctype="multipart/form-data" 지정안하면 img가 None이 됩니다#}
-            <form action="http://localhost:5000/contents" method="POST" enctype="multipart/form-data">
+            <form action="http://yjworld.shop/contents" method="POST" enctype="multipart/form-data">
                 <div>
                     <div class="form-group">
                         {{ form.subject.label("제목") }}
@@ -69,7 +69,7 @@
                         <button class="level-item button is-rounded is-active" type="submit">
                             자랑하기
                         </button>
-                        <button class="level-item button is-rounded is-active" onclick="location.href='/'">
+                        <button class="level-item button is-rounded is-active" onclick="location.href='/home'">
                             돌아가기
                         </button>
                     </nav>

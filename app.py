@@ -21,12 +21,13 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
 
 SECRET_KEY = 'SPARTA'
 
-client = MongoClient('3.34.44.93', 27017, username="sparta", password="woowa")
+# client = MongoClient('3.34.44.93', 27017, username="sparta", password="woowa")
+client = MongoClient('mongodb://test:test@localhost', 27017)
 db = client.hang31jo
 
 
 # 메인
-@app.route('/')
+@app.route('/home')
 def home():
     return render_template('index.html')
 
@@ -51,7 +52,7 @@ def lastes():
 
 
 # 로그인
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == "GET":
         return render_template('login.html')
@@ -160,44 +161,8 @@ def upload():
             else:
                 db.points.insert_one({'nickname': nick, 'pts': 5})
 
-            return redirect('/')
+            return redirect('/home')
     return render_template('write.html', form=form)
-
-@app.route('/like', methods=['GET', 'POST'])
-def like():
-    action = request.form['action_give']
-    _id = request.form['_id_give']
-    _id = ObjectId(_id)
-    likedNick = db.contents.find_one({'_id': _id})['nick']
-
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    userinfo = db.members.find_one({'id': payload['id']}, {'_id': 0})
-    nick = userinfo['nickname']
-
-    if action == "like":
-        db.points.update_one(
-            {'nickname': likedNick},
-            {'$set': {'pts': db.points.find_one({'nickname': nick})['pts'] + 1}}
-        )
-        db.contents.update_one(
-            {'_id': _id},
-            {'$set': {'like': db.contents.find_one({'_id': _id})['like'] + 1}}
-        )
-        db.like.insert_one({'nickname': nick, '_id': _id})
-    else:
-        db.points.update_one(
-            {'nickname': likedNick},
-            {'$set': {'pts': db.points.find_one({'nickname': nick})['pts'] - 1}}
-        )
-        db.contents.update_one(
-            {'_id': _id},
-            {'$set': {'like': db.contents.find_one({'_id': _id})['like'] - 1}}
-        )
-        db.like.delete_one({'nickname': nick, '_id': _id})
-        count = db.like.count_documents({'nickname': nick, '_id': _id})
-        return jsonify({"result": "success", 'msg': 'updated', "count": count})
-    return redirect('/')
 
 _id = ''
 @app.route('/a', methods=['GET','POST'])
@@ -235,7 +200,7 @@ def update():
                 )
                 form.img.data.save('./static/img/' + filename)
                 os.remove(del_path)
-                return redirect('/')
+                return redirect('/home')
 
         elif not form.img.data.filename:
             db.contents.update_one(
@@ -246,7 +211,7 @@ def update():
                 {'_id': _id},
                 {'$set': {'content': form.content.data}}
             )
-            return redirect('/')
+            return redirect('/home')
     return render_template('update.html', form=form, subject=subject, content=content, imgPath=imgPath)
 
 @app.route('/delete', methods=['GET','POST'])
@@ -262,8 +227,7 @@ def delete():
         {'$set': {'pts': db.points.find_one({'nickname': nick})['pts'] - (5 + db.contents.find_one({'_id': _id})['like'])}}
     )
     db.contents.delete_one({'_id': _id})
-
-    return redirect('/')
+    return redirect('/home')
 
 
 if __name__ == '__main__':
