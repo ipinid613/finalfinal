@@ -21,7 +21,11 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
 
 SECRET_KEY = 'SPARTA'
 
+# loacl로 돌리고 싶으면...
+# 1. 아래 주석 활성화
 # client = MongoClient('3.34.44.93', 27017, username="sparta", password="woowa")
+# 2. update.html의  <form action="http://yjworld.shop/update" 을 "http://localhost:5000/update"로 변경
+# 3. write.html의 <form action="http://yjworld.shop/contents"을 "http://localhost:5000/contents"로 변경
 client = MongoClient('mongodb://test:test@localhost', 27017)
 db = client.hang31jo
 
