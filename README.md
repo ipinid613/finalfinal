@@ -78,7 +78,7 @@
 
 function is_username(asValue) {
     //{# 괄호 ( )안의 요소는 필수 포함 요소임. a-zA-Z 소문자 a-z, 대문자 A-Z 포함! 대괄호는 선택포함을 의미함. 숫자 0-9사용가능!. 2-10자여야 한다.#}
-    var regExp = /^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{2,10}$/;
+    var regExp = /^(?=.*[a-zA-Z])[a-zA-Z0-9_.]{2,10}$/;
     return regExp.test(asValue); // {# .test 메서드를 통해 boolean 값으로 return 가능 #}
 }
 
